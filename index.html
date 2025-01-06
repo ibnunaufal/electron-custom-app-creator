@@ -1,0 +1,204 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Script Runner</title>
+    <style>
+        body {
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .file-path {
+            margin-left: 10px;
+            color: #666;
+        }
+        #output {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            min-height: 100px;
+        }
+        .file-type {
+            color: #888;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+        #jsonDisplay {
+            margin-top: 10px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .error {
+            color: #dc3545;
+            margin-top: 5px;
+            font-size: 0.9em;
+        }
+        #checkboxContainer {
+            margin-top: 10px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        }
+    </style>
+</head>
+<body>
+    <h1>Script Runner</h1>
+    
+    <div class="input-group">
+        <label>Select multiple google-services.json:</label>
+        <button id="selectMultipleFiles">Choose Files</button>
+        <span class="file-type">(*.json)</span>
+        <span id="multipleFilesPath" class="file-path"></span>
+    </div>
+
+    <div class="input-group">
+        <label>Select list of the customapp in a json file:</label>
+        <button id="selectSingleFile">Choose JSON File</button>
+        <span class="file-type">(*.json)</span>
+        <span id="singleFilePath" class="file-path"></span>
+        <div id="jsonError" class="error"></div>
+    </div>
+
+    <div class="input-group">
+        <label>Select a number:</label>
+        <select id="numberSelect">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+        </select>
+
+        <div id="checkboxContainer"></div>
+    </div>
+
+    <div class="input-group">
+        <label>Select Directory of Android Studio Project:</label>
+        <button id="selectDirectory">Choose Directory</button>
+        <span id="directoryPath" class="file-path"></span>
+    </div>
+
+    <div class="input-group">
+        <label>Select Directory of the Result:</label>
+        <button id="selectDirectory">Choose Directory</button>
+        <span id="directoryPath" class="file-path"></span>
+    </div>
+
+    <button id="runScript">Run Script</button>
+    <div id="output"></div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+        
+        // Variables to store paths and data
+        let multipleFilePaths = [];
+        let singleFilePath = '';
+        let directoryPath = '';
+        let jsonData = null;
+        let selectedFlavors = [];
+
+
+        // Multiple files selection
+        document.getElementById('selectMultipleFiles').addEventListener('click', () => {
+            ipcRenderer.send('select-multiple-files');
+        });
+
+        ipcRenderer.on('multiple-files-selected', (event, paths) => {
+            multipleFilePaths = paths;
+            document.getElementById('multipleFilesPath').textContent = 
+                paths.length > 0 ? `Selected ${paths.length} files` : '';
+        });
+
+        // Single file selection (JSON only)
+        document.getElementById('selectSingleFile').addEventListener('click', () => {
+            document.getElementById('jsonError').textContent = '';
+            document.getElementById('checkboxContainer').innerHTML = '';
+            ipcRenderer.send('select-single-file');
+        });
+
+        ipcRenderer.on('single-file-selected', (event, data) => {
+            singleFilePath = data.path;
+            jsonData = data.content;
+            document.getElementById('singleFilePath').textContent = data.path;
+
+            // Generate checkboxes for flavorName
+            const checkboxContainer = document.getElementById('checkboxContainer');
+            jsonData.forEach((item, index) => {
+                const flavorName = item.flavorName || `Flavor ${index + 1}`;
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `flavor-${index}`;
+                checkbox.value = flavorName;
+
+                const label = document.createElement('label');
+                label.setAttribute('for', `flavor-${index}`);
+                label.textContent = flavorName;
+                label.style.display = 'inline-block';
+                label.style.marginLeft = '5px';
+
+                const wrapper = document.createElement('div');
+                wrapper.style.display = 'flex';
+                wrapper.style.alignItems = 'center';
+                wrapper.appendChild(checkbox);
+                wrapper.appendChild(label);
+
+                checkboxContainer.appendChild(wrapper);
+            });
+        });
+
+
+        ipcRenderer.on('json-error', (event, errorMessage) => {
+            document.getElementById('jsonError').textContent = errorMessage;
+            jsonData = null;
+        });
+
+        // Directory selection
+        document.getElementById('selectDirectory').addEventListener('click', () => {
+            ipcRenderer.send('select-directory');
+        });
+
+        ipcRenderer.on('directory-selected', (event, path) => {
+            directoryPath = path;
+            document.getElementById('directoryPath').textContent = path || '';
+        });
+
+        // Run script
+        document.getElementById('runScript').addEventListener('click', () => {
+            ipcRenderer.send('run-script');
+        });
+
+        document.getElementById('runScript').addEventListener('click', () => {
+        const checkboxes = document.querySelectorAll('#checkboxContainer input[type="checkbox"]');
+        selectedFlavors = Array.from(checkboxes)
+            .filter(checkbox => checkbox.checked)
+            .map(checkbox => checkbox.value);
+
+        if (selectedFlavors.length > 0) {
+            alert(`Selected Flavors: ${selectedFlavors.join(', ')}`);
+        } else {
+            alert('No flavors selected.');
+        }
+
+        // Sending selected flavors to the main process for further handling if needed
+        ipcRenderer.send('run-script', { selectedFlavors });
+    });
+
+        ipcRenderer.on('script-output', (event, output) => {
+            document.getElementById('output').innerText = output;
+        });
+    </script>
+</body>
+</html>

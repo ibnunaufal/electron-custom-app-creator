@@ -1,0 +1,14 @@
+{
+  "name": "electron-custom-app-creator",
+  "version": "1.0.0",
+  "description": "An app to create custom-app",
+  "main": "main.js",
+  "author": "Ibnu Naufal",
+  "license": "ISC",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^33.2.1"
+  }
+}
