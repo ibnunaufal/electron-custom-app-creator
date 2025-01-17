@@ -72,20 +72,6 @@
     </div>
 
     <div class="input-group">
-        <label>Select a number:</label>
-        <select id="numberSelect">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-        </select>
-
-        <div id="checkboxContainer"></div>
-    </div>
-
-    <div class="input-group">
         <label>Select Directory of Android Studio Project:</label>
         <button id="selectDirectory">Choose Directory</button>
         <span id="directoryPath" class="file-path"></span>
@@ -97,7 +83,16 @@
         <span id="directoryPath" class="file-path"></span>
     </div>
 
+    <div class="input-group">
+        <label>Versi dinaikin:</label>
+        <select id="numberSelect">
+            <option value="1">Ya</option>
+            <option value="2">Tidak</option>
+        </select>
+    </div>
+
     <button id="runScript">Run Script</button>
+
     <div id="output"></div>
 
     <script>
@@ -109,7 +104,49 @@
         let directoryPath = '';
         let jsonData = null;
         let selectedFlavors = [];
+        let isKenaikanVersi = false;
+        let listGagal = [];
+        let step = 0;
+        let isiExistingBuildGradle = '';
 
+        function startExecution() {
+            if (step == 0) {
+                isKenaikanVersi = document.getElementById('numberSelect').value === '1';
+                if (isKenaikanVersi) {
+                    // loop buat ndapetin versi barune
+                    for (let i = 0; i < jsonData.length; i++) {
+                        checkEndpoint(jsonData[i].id, i);
+                    }
+                    // setelah loop selesai, jsonData sudah siap dipake
+                }
+                // read file build.gradle lalu simpan ke variable sementara
+                ipcRenderer.send('read-file', directoryPath);
+            }
+            else if (step == 1) {
+                // lalu replace section android dan signingConfigs dari existing build.gradle
+                // dengan section android dan signingConfigs dari customapp
+                
+            }
+        }
+
+        function checkEndpoint(id, index) {
+            fetch(`https://api.github.com/users/${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    // simpen versi barune
+                    jsonData[index].endpoint = data.url;
+                })
+                .catch(error => {
+                    console.error(error);
+                    listGagal.push(id);
+                });
+        }
+
+        // create folder
+        document.getElementById('createFolder').addEventListener('click', () => {
+            ipcRenderer.send('create-folder');
+        });
 
         // Multiple files selection
         document.getElementById('selectMultipleFiles').addEventListener('click', () => {
