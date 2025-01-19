@@ -1,241 +1,534 @@
-
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Script Runner</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Plus+Jakarta+Sans"
+    />
+    <!-- use the button.css  -->
+    <link rel="stylesheet" href="button.css" />
+    <link rel="stylesheet" href="table.css" />
     <style>
-        body {
-            padding: 20px;
-            font-family: Arial, sans-serif;
-        }
-        .input-group {
-            margin: 15px 0;
-        }
-        .input-group label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        .file-path {
-            margin-left: 10px;
-            color: #666;
-        }
-        #output {
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            min-height: 100px;
-        }
-        .file-type {
-            color: #888;
-            font-size: 0.9em;
-            margin-left: 10px;
-        }
-        #jsonDisplay {
-            margin-top: 10px;
-            padding: 15px;
-            background-color: #f5f5f5;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            white-space: pre-wrap;
-            font-family: monospace;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        .error {
-            color: #dc3545;
-            margin-top: 5px;
-            font-size: 0.9em;
-        }
-        #checkboxContainer {
-            margin-top: 10px;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        }
+      body {
+        padding: 20px;
+        font-family: "Plus Jakarta Sans", sans-serif;
+      }
+
+      .input-group {
+        margin: 15px 0;
+      }
+
+      .input-group label {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      .file-path {
+        margin-left: 10px;
+        color: #666;
+      }
+
+      #output {
+        margin-top: 20px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        min-height: 100px;
+      }
+
+      .file-type {
+        color: #888;
+        font-size: 0.9em;
+        margin-left: 10px;
+      }
+
+      #jsonDisplay {
+        margin-top: 10px;
+        padding: 15px;
+        background-color: #f5f5f5;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        white-space: pre-wrap;
+        font-family: monospace;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+
+      .error {
+        color: #dc3545;
+        margin-top: 5px;
+        font-size: 0.9em;
+      }
+
+      #checkboxContainer {
+        margin-top: 10px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      }
     </style>
-</head>
-<body>
+  </head>
+
+  <body>
     <h1>Script Runner</h1>
-    
-    <div class="input-group">
-        <label>Select multiple google-services.json:</label>
-        <button id="selectMultipleFiles">Choose Files</button>
-        <span class="file-type">(*.json)</span>
-        <span id="multipleFilesPath" class="file-path"></span>
-    </div>
 
-    <div class="input-group">
-        <label>Select list of the customapp in a json file:</label>
-        <button id="selectSingleFile">Choose JSON File</button>
-        <span class="file-type">(*.json)</span>
-        <span id="singleFilePath" class="file-path"></span>
-        <div id="jsonError" class="error"></div>
-    </div>
+    <div style="display: flex">
+      <div>
+        <div class="input-group">
+          <label
+            >Select multiple google-services.json:<span class="file-type"
+              >(*.json)</span
+            ></label
+          >
+          <button class="button-primary" id="selectGoogleJsonFile">
+            Choose Files
+          </button>
+          <span id="googleJsonFilePath" class="file-path"></span>
+        </div>
 
-    <div class="input-group">
-        <label>Select Directory of Android Studio Project:</label>
-        <button id="selectDirectory">Choose Directory</button>
-        <span id="directoryPath" class="file-path"></span>
-    </div>
+        <div class="input-group">
+          <label
+            >Select list of the customapp in a json file:
+            <span class="file-type">(*.json)</span></label
+          >
+          <button
+            class="button-primary"
+            class="button-primary"
+            id="selectFlavorFile"
+          >
+            Choose JSON File
+          </button>
+          <span id="singleFilePath" class="file-path"></span>
+          <div id="jsonError" class="error"></div>
+        </div>
 
-    <div class="input-group">
-        <label>Select Directory of the Result:</label>
-        <button id="selectDirectory">Choose Directory</button>
-        <span id="directoryPath" class="file-path"></span>
-    </div>
+        <div class="input-group">
+          <label
+            >Select Directory of Android Studio Project:
+            <span id="directoryPathAndroidStudio" class="file-path"
+              >asd</span
+            ></label
+          >
+          <button class="button-primary" id="selectDirectoryAndroidStudio">
+            Choose Directory
+          </button>
+        </div>
 
-    <div class="input-group">
-        <label>Versi dinaikin:</label>
-        <select id="numberSelect">
+        <div class="input-group">
+          <label
+            >Select Directory of the Result:
+            <span id="directoryPathResult" class="file-path">asd</span></label
+          >
+          <button class="button-primary" id="selectDirectoryResult">
+            Choose Directory
+          </button>
+        </div>
+
+        <div class="input-group">
+          <label>Versi dinaikin:</label>
+          <select id="numberSelect" class="button-primary">
             <option value="1">Ya</option>
             <option value="2">Tidak</option>
-        </select>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label>Opsi:</label>
+          <select id="resultSelect" class="button-primary">
+            <option value="1">Buatkan APK Debug saja</option>
+            <option value="2">Buatkan AAB Release saja</option>
+            <option value="3">Buatkan AAB dan APK nya</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <button class="button-secondary" id="runScript">Run Script</button>
+        </div>
+      </div>
+      <div>
+        Pilih Flavor yang akan dibuatkan:
+        <div>
+          <input type="checkbox" id="selectAll" name="selectAll" />
+          <label for="selectAll">Select All</label>
+        </div>
+        <div style="max-height: 150px; overflow-y: auto">
+          <div id="checkboxContainer"></div>
+        </div>
+      </div>
+    </div>
+    <div class="input-group">
+      Log:
+      <div id="output"></div>
     </div>
 
-    <button id="runScript">Run Script</button>
-
-    <div id="output"></div>
-
     <script>
-        const { ipcRenderer } = require('electron');
-        
-        // Variables to store paths and data
-        let multipleFilePaths = [];
-        let singleFilePath = '';
-        let directoryPath = '';
-        let jsonData = null;
-        let selectedFlavors = [];
-        let isKenaikanVersi = false;
-        let listGagal = [];
-        let step = 0;
-        let isiExistingBuildGradle = '';
+      const { ipcRenderer } = require("electron");
 
-        function startExecution() {
-            if (step == 0) {
-                isKenaikanVersi = document.getElementById('numberSelect').value === '1';
-                if (isKenaikanVersi) {
-                    // loop buat ndapetin versi barune
-                    for (let i = 0; i < jsonData.length; i++) {
-                        checkEndpoint(jsonData[i].id, i);
-                    }
-                    // setelah loop selesai, jsonData sudah siap dipake
+      // Variables to store paths and data
+      let multipleFilePaths = [];
+      let singleFilePath = "";
+      let directoryPath = "";
+      let jsonData = null;
+      let selectedFlavors = [];
+      let isKenaikanVersi = false;
+      let listGagal = [];
+      let step = 0;
+
+      let directoryPathAndroidStudio = "";
+      let directoryPathResult = "";
+      let googleJsonFilePath = "";
+      let flavorFilePath = "";
+
+      let signingConfigContent = "";
+      let productFlavorContent = "";
+
+      let gradleFileContent = "";
+
+      function startExecution() {
+        if (step == 0) {
+          // file google json udah
+          // file flavor json udah
+          // directory android studio udah
+          // directory result udah
+
+          if (
+            googleJsonFilePath == "" ||
+            flavorFilePath == "" ||
+            directoryPathAndroidStudio == "" ||
+            directoryPathResult == "" ||
+            jsonData == ""
+          ) {
+            alert("Semua data harus diisi");
+            return;
+          }
+          for (let i = 0; i < jsonData.length; i++) {
+            if (document.getElementById(`flavor-${i}`).checked) {
+                let c = jsonData[i];
+                let tempSigningConfig = `${c.flavorName}ConfigRelease {
+                    storeFile file("jks/${c.keystoreName}")
+                    storePassword "${c.password}"
+                    keyAlias "${c.keyAlias}"
+                    keyPassword "${c.password}"
+                }\n`;
+                let tempProductFlavor = `${c.flavorName} {
+                    applicationId "${c.packageName}"
+                    versionCode ${c.versionCode}
+                    versionName "${c.versionName}"
+                    resValue "string", "app_name", "${c.applicationName}"
+                    resValue "string", "bank_partner", "${c.banks.join(",")}"
+                    resValue "color", "primary", "${c.primary}"
+                    resValue "color", "secondary", "${c.secondary}"
+                    buildConfigField("String", "SERVER_KEY_ID", secretProperties['SERVER_KEY_ID_${c.serverKey}'])
+                    signingConfig signingConfigs.${c.flavorName}ConfigRelease
+                }\n`;
+                signingConfigContent += tempSigningConfig;
+                productFlavorContent += tempProductFlavor;
+            }
+          }
+
+            let gradleFileContent = getExampleGradleFile();
+            gradleFileContent = gradleFileContent.replace(`signingConfigs {}`, `signingConfigs {${signingConfigContent}}`);
+            gradleFileContent = gradleFileContent.replace(`productFlavors {}`, `productFlavors {${productFlavorContent}}`);
+            // console.log(gradleFileContent);
+            localStorage.setItem("test", "gradleFileContent");
+            ipcRenderer.send('coba');
+            let data = {
+                path: directoryPathResult,
+                fileName: "build.gradle",
+                content: gradleFileContent
+            }
+            ipcRenderer.send("create-file", data);
+
+        } else if (step == 1) {
+        }
+      }
+
+      function checkEndpoint(id, index) {
+        fetch(`https://api.dev.katalis.info/main_a/info/google-play/${id}`)
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+            // simpen versi barune
+            jsonData[index].endpoint = data.url;
+          })
+          .catch((error) => {
+            console.error(error);
+            listGagal.push(id);
+          });
+      }
+
+      // create folder
+      // document.getElementById('createFolder').addEventListener('click', () => {
+      //     ipcRenderer.send('create-folder');
+      // });
+
+      // Multiple files selection
+      document
+        .getElementById("selectGoogleJsonFile")
+        .addEventListener("click", () => {
+          ipcRenderer.send("select-google-json-file");
+        });
+
+      ipcRenderer.on("google-json-file-selected", (event, paths) => {
+        googleJsonFilePath = paths;
+        document.getElementById("googleJsonFilePath").textContent =
+          googleJsonFilePath || "";
+      });
+
+      // Single file selection (JSON only)
+      document
+        .getElementById("selectFlavorFile")
+        .addEventListener("click", () => {
+          document.getElementById("jsonError").textContent = "";
+          // document.getElementById('checkboxContainer').innerHTML = '';
+          ipcRenderer.send("select-flavor-file");
+        });
+
+      ipcRenderer.on("flavor-file-selected", (event, data) => {
+        flavorFilePath = data.path;
+        jsonData = data.content;
+        document.getElementById("singleFilePath").textContent = flavorFilePath;
+
+        // Generate checkboxes for flavorName
+        const checkboxContainer = document.getElementById("checkboxContainer");
+        // add select all checkbox
+        const selectAllCheckbox = document.createElement("input");
+
+        jsonData.forEach((item, index) => {
+          const flavorName = item.flavorName || `Flavor ${index + 1}`;
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.id = `flavor-${index}`;
+          checkbox.value = flavorName;
+
+          const label = document.createElement("label");
+          label.setAttribute("for", `flavor-${index}`);
+          label.textContent = `${flavorName} (${item.versionName || "0.0.1"})`;
+          label.style.display = "inline-block";
+          label.style.marginLeft = "5px";
+
+          const wrapper = document.createElement("div");
+          wrapper.style.display = "flex";
+          wrapper.style.alignItems = "center";
+          wrapper.appendChild(checkbox);
+          wrapper.appendChild(label);
+
+          checkboxContainer.appendChild(wrapper);
+
+          // show selected flavors
+          // console.log(flavorName);
+        });
+      });
+
+      ipcRenderer.on("json-error", (event, errorMessage) => {
+        document.getElementById("jsonError").textContent = errorMessage;
+        jsonData = null;
+      });
+
+      // Directory of Android Studio Selection selection
+      document
+        .getElementById("selectDirectoryAndroidStudio")
+        .addEventListener("click", () => {
+          ipcRenderer.send("select-directory-android-studio");
+        });
+
+      // Directory of Result selection
+      document
+        .getElementById("selectDirectoryResult")
+        .addEventListener("click", () => {
+          ipcRenderer.send("select-directory-result");
+        });
+
+      ipcRenderer.on("directory-selected-android-studio", (event, path) => {
+        directoryPathAndroidStudio = path;
+        document.getElementById("directoryPathAndroidStudio").textContent =
+          directoryPathAndroidStudio || "";
+      });
+
+      ipcRenderer.on("build-gradle-content-detected", (event, content) => {
+        let temp = updateGradleConfig(content);
+        console.log(temp);
+        // replace section android dan signingConfigs dari existing build.gradle
+        // dengan section android dan signingConfigs dari customapp
+        // lalu simpan ke existing build.gradle
+      });
+
+      ipcRenderer.on("directory-selected-result", (event, path) => {
+        directoryPathResult = path;
+        document.getElementById("directoryPathResult").textContent =
+          directoryPathResult || "";
+      });
+
+      // Run script
+      document.getElementById("runScript").addEventListener("click", () => {
+        step = 0;
+        startExecution();
+        // ipcRenderer.send('run-script');
+        // get selected flavors
+        // console.log("Run Script");
+        // console.log(googleJsonFilePath);
+        // console.log(flavorFilePath);
+      });
+
+      ipcRenderer.on("script-output", (event, output) => {
+        document.getElementById("output").innerText = output;
+      });
+
+      function getExampleGradleFile() {
+        return `
+            plugins {
+                id 'kotlin-kapt'
+                id 'com.android.application'
+                id 'org.jetbrains.kotlin.android'
+                id 'dagger.hilt.android.plugin'
+                id 'kotlin-parcelize'
+                id 'com.google.gms.google-services'
+                id 'com.google.devtools.ksp'
+                id 'com.google.firebase.crashlytics'
+            }
+
+            def secretPropertiesFile = rootProject.file("secret.properties")
+            def secretProperties = new Properties()
+            secretProperties.load(new FileInputStream(secretPropertiesFile))
+
+            android {
+                namespace 'id.co.pspmobile'
+                compileSdk 34
+                defaultConfig {
+                    applicationId "id.co.pspmobile"
+                    minSdk 24
+                    targetSdk 34
+                    versionCode 13
+                    versionName "0.0.13"
+                    resValue "string", "app_name", "PSP Mobile"
+                    resValue "string", "bank_partner", "TKI"
+                    resValue "color", "primary", "#3c2670"
+                    resValue "color", "secondary", "#3c2670"
+                    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+                    buildConfigField("String", "SERVER_KEY_ID", secretProperties['SERVER_KEY_ID_1'])
                 }
-                // read file build.gradle lalu simpan ke variable sementara
-                ipcRenderer.send('read-file', directoryPath);
+
+                buildTypes {
+                    release {
+                        minifyEnabled false
+                        proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+                    }
+                }
+                signingConfigs {}
+                flavorDimensions "default"
+                productFlavors {}
+                compileOptions {
+                    sourceCompatibility JavaVersion.VERSION_17
+                    targetCompatibility JavaVersion.VERSION_17
+                }
+                kotlinOptions {
+                    jvmTarget = '17'
+                }
+                buildFeatures {
+                    buildConfig true
+                    viewBinding true
+                }
             }
-            else if (step == 1) {
-                // lalu replace section android dan signingConfigs dari existing build.gradle
-                // dengan section android dan signingConfigs dari customapp
-                
-            }
-        }
-
-        function checkEndpoint(id, index) {
-            fetch(`https://api.github.com/users/${id}`)
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    // simpen versi barune
-                    jsonData[index].endpoint = data.url;
-                })
-                .catch(error => {
-                    console.error(error);
-                    listGagal.push(id);
-                });
-        }
-
-        // create folder
-        document.getElementById('createFolder').addEventListener('click', () => {
-            ipcRenderer.send('create-folder');
-        });
-
-        // Multiple files selection
-        document.getElementById('selectMultipleFiles').addEventListener('click', () => {
-            ipcRenderer.send('select-multiple-files');
-        });
-
-        ipcRenderer.on('multiple-files-selected', (event, paths) => {
-            multipleFilePaths = paths;
-            document.getElementById('multipleFilesPath').textContent = 
-                paths.length > 0 ? `Selected ${paths.length} files` : '';
-        });
-
-        // Single file selection (JSON only)
-        document.getElementById('selectSingleFile').addEventListener('click', () => {
-            document.getElementById('jsonError').textContent = '';
-            document.getElementById('checkboxContainer').innerHTML = '';
-            ipcRenderer.send('select-single-file');
-        });
-
-        ipcRenderer.on('single-file-selected', (event, data) => {
-            singleFilePath = data.path;
-            jsonData = data.content;
-            document.getElementById('singleFilePath').textContent = data.path;
-
-            // Generate checkboxes for flavorName
-            const checkboxContainer = document.getElementById('checkboxContainer');
-            jsonData.forEach((item, index) => {
-                const flavorName = item.flavorName || `Flavor ${index + 1}`;
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.id = `flavor-${index}`;
-                checkbox.value = flavorName;
-
-                const label = document.createElement('label');
-                label.setAttribute('for', `flavor-${index}`);
-                label.textContent = flavorName;
-                label.style.display = 'inline-block';
-                label.style.marginLeft = '5px';
-
-                const wrapper = document.createElement('div');
-                wrapper.style.display = 'flex';
-                wrapper.style.alignItems = 'center';
-                wrapper.appendChild(checkbox);
-                wrapper.appendChild(label);
-
-                checkboxContainer.appendChild(wrapper);
-            });
-        });
 
 
-        ipcRenderer.on('json-error', (event, errorMessage) => {
-            document.getElementById('jsonError').textContent = errorMessage;
-            jsonData = null;
-        });
+            dependencies {
 
-        // Directory selection
-        document.getElementById('selectDirectory').addEventListener('click', () => {
-            ipcRenderer.send('select-directory');
-        });
+                implementation 'androidx.core:core-ktx:1.12.0'
+                implementation 'androidx.appcompat:appcompat:1.6.1'
+                implementation 'com.google.android.material:material:1.10.0'
+                implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+                implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2'
+                implementation 'androidx.navigation:navigation-fragment-ktx:2.7.5'
+                implementation 'androidx.navigation:navigation-ui-ktx:2.7.5'
+                implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+                implementation 'androidx.activity:activity:1.8.0'
+                testImplementation 'junit:junit:4.13.2'
+                androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+                androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
-        ipcRenderer.on('directory-selected', (event, path) => {
-            directoryPath = path;
-            document.getElementById('directoryPath').textContent = path || '';
-        });
+                //Firebase
+                implementation 'com.google.firebase:firebase-messaging:23.3.1'
+                implementation 'com.google.firebase:firebase-core:21.1.1'
 
-        // Run script
-        document.getElementById('runScript').addEventListener('click', () => {
-            ipcRenderer.send('run-script');
-        });
+                //Material & View
+                implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+                implementation 'de.hdodenhof:circleimageview:3.1.0'
 
-        document.getElementById('runScript').addEventListener('click', () => {
-        const checkboxes = document.querySelectorAll('#checkboxContainer input[type="checkbox"]');
-        selectedFlavors = Array.from(checkboxes)
-            .filter(checkbox => checkbox.checked)
-            .map(checkbox => checkbox.value);
+                //Dagger Hilt
+                implementation 'com.google.dagger:hilt-android:2.48.1'
+                kapt 'com.google.dagger:hilt-android-compiler:2.48.1'
+                //    kapt 'androidx.hilt:hilt-compiler:1.1.0'
 
-        if (selectedFlavors.length > 0) {
-            alert(`Selected Flavors: ${selectedFlavors.join(', ')}`);
-        } else {
-            alert('No flavors selected.');
-        }
+                //Retrofit + GSON
+                implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+                implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+                implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
+                implementation 'com.squareup.okhttp3:logging-interceptor:4.9.1'
 
-        // Sending selected flavors to the main process for further handling if needed
-        ipcRenderer.send('run-script', { selectedFlavors });
-    });
+                //chucker
+                debugImplementation "com.github.chuckerteam.chucker:library:3.5.2"
+                releaseImplementation "com.github.chuckerteam.chucker:library-no-op:3.5.2"
 
-        ipcRenderer.on('script-output', (event, output) => {
-            document.getElementById('output').innerText = output;
-        });
+                //Coroutine
+                implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
+                implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
+
+                // DocumentFile and ExitInterface
+                implementation "androidx.documentfile:documentfile:1.0.1"
+                implementation "androidx.exifinterface:exifinterface:1.3.6"
+
+                //Paging 3
+                implementation "androidx.paging:paging-runtime-ktx:3.2.1"
+
+                //Datastore
+                implementation "androidx.datastore:datastore-preferences:1.0.0"
+
+                //Glide
+                implementation 'com.github.bumptech.glide:glide:4.13.1'
+
+                // coil
+                implementation 'io.coil-kt:coil:2.5.0'
+                implementation("io.coil-kt:coil-svg:2.5.0")
+
+                //Chip Navigation Bar
+                implementation 'com.github.ismaeldivita:chip-navigation-bar:1.4.0'
+
+                //Lifecycle components
+                implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+                implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.2"
+
+                //Cardview
+                implementation 'androidx.cardview:cardview:1.0.0'
+
+                //Paging
+                implementation 'androidx.paging:paging-runtime-ktx:3.2.1'
+
+                // fingerprint dependency
+                implementation "androidx.biometric:biometric-ktx:1.2.0-alpha04"
+
+                //Picasso image library
+                implementation 'com.squareup.picasso:picasso:2.71828'
+
+                //lottie
+                implementation 'com.airbnb.android:lottie:6.2.0'
+
+                //crashLythic
+                implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
+                implementation("com.google.firebase:firebase-crashlytics")
+                implementation("com.google.firebase:firebase-analytics")
+
+                // exo player
+                implementation "androidx.media3:media3-exoplayer:1.3.0"
+                implementation "androidx.media3:media3-exoplayer-dash:1.3.0"
+                implementation "androidx.media3:media3-ui:1.3.0"
+
+                //baloon tooltips
+                implementation "com.github.skydoves:balloon:1.3.4"
+
+                // crashlitycs and analytics
+                implementation 'com.google.firebase:firebase-crashlytics:19.2.0'
+                implementation 'com.google.firebase:firebase-core:21.1.1'
+            }`;
+      }
     </script>
-</body>
+  </body>
 </html>

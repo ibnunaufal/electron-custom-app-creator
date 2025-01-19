@@ -1,0 +1,116 @@
+/* CSS */
+.button-primary {
+    align-items: center;
+    background-color: #AAB99A;
+    border: 2px solid #111;
+    border-radius: 8px;
+    box-sizing: border-box;
+    color: #111;
+    cursor: pointer;
+    display: flex;
+    font-family: Inter,sans-serif;
+    font-size: 12px;
+    height: 24px;
+    justify-content: center;
+    line-height: 24px;
+    max-width: 100%;
+    padding: 0 25px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+.button-primary:after {
+    background-color: #111;
+    border-radius: 8px;
+    content: "";
+    display: block;
+    height: 24px;
+    left: 0;
+    width: 100%;
+    position: absolute;
+    top: -2px;
+    transform: translate(8px, 8px);
+    transition: transform .2s ease-out;
+    z-index: -1;
+}
+
+.button-primary:hover:after {
+    transform: translate(0, 0);
+}
+
+.button-primary:active {
+    background-color: #727D73;
+    outline: 0;
+}
+
+.button-primary:hover {
+    outline: 0;
+}
+
+@media (min-width: 768px) {
+    .button-primary {
+        padding: 0 30px;
+    }
+}
+
+.button-secondary {
+    align-items: center;
+    background-color: #727D73;
+    border: 2px solid #111;
+    border-radius: 8px;
+    box-sizing: border-box;
+    color: #F0F0D7;
+    cursor: pointer;
+    display: flex;
+    font-family: Inter,sans-serif;
+    font-size: 12px;
+    height: 24px;
+    justify-content: center;
+    line-height: 24px;
+    max-width: 100%;
+    padding: 0 25px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+.button-secondary:after {
+    background-color: #111;
+    border-radius: 8px;
+    content: "";
+    display: block;
+    height: 24px;
+    left: 0;
+    width: 100%;
+    position: absolute;
+    top: -2px;
+    transform: translate(8px, 8px);
+    transition: transform .2s ease-out;
+    z-index: -1;
+}
+
+.button-secondary:hover:after {
+    transform: translate(0, 0);
+}
+
+.button-secondary:active {
+    background-color: #AAB99A;
+    outline: 0;
+}
+
+.button-secondary:hover {
+    outline: 0;
+}
+
+@media (min-width: 768px) {
+    .button-secondary {
+        padding: 0 30px;
+    }
+}
