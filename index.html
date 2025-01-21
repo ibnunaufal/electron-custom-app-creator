@@ -6,13 +6,22 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css?family=Plus+Jakarta+Sans"
     />
+    <script
+      src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs"
+      type="module"
+    ></script>
     <!-- use the button.css  -->
     <link rel="stylesheet" href="button.css" />
     <link rel="stylesheet" href="table.css" />
     <style>
       body {
         padding: 20px;
+        background: #dfeecf;
         font-family: "Plus Jakarta Sans", sans-serif;
+      }
+
+      .hidden {
+        display: none;
       }
 
       .input-group {
@@ -21,7 +30,6 @@
 
       .input-group label {
         display: block;
-        margin-bottom: 5px;
       }
 
       .file-path {
@@ -65,93 +73,169 @@
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
       }
+
+      :root {
+        --color-black: #000000;
+        --color-blue: #d5eaff;
+        --color-purple: #c3bafa;
+        --color-green: #c8daaa;
+        --color-yellow: #fddd9a;
+        --color-pink: #f6bdd9;
+
+        --border-width: 2px;
+        --border-radius: 5px;
+      }
+      .container {
+        /* max-width: 900px; */
+        margin: 0 auto;
+        padding: 10px 0;
+      }
+      .d-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 30px;
+      }
+
+      /********* CARD COMPONENT *********/
+      .card-brutalism {
+        border: var(--border-width) solid black;
+        box-shadow: 8px 8px 0px 0px var(--color-black);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+      }
+      .card-header {
+        min-height: 40px;
+        border-bottom: var(--border-width) solid var(--color-black);
+      }
+      .card-header h2 {
+        margin: 0;
+        padding: 10px;
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 28px;
+      }
+      .card-img {
+        width: 100%;
+        height: 150px;
+      }
+      .card-img img {
+        object-fit: cover;
+        object-position: center;
+        width: 100%;
+        height: 100%;
+      }
+      .card-content {
+        padding: 15px;
+      }
+      .card-content p {
+        margin: 0;
+      }
     </style>
   </head>
 
   <body>
-    <h1>Script Runner</h1>
-
     <div style="display: flex">
-      <div>
-        <div class="input-group">
-          <label
-            >Select multiple google-services.json:<span class="file-type"
-              >(*.json)</span
-            ></label
-          >
-          <button class="button-primary" id="selectGoogleJsonFile">
-            Choose Files
-          </button>
-          <span id="googleJsonFilePath" class="file-path"></span>
-        </div>
+      <dotlottie-player
+        src="https://lottie.host/a0ef34e4-d86b-460b-84d9-ebfdfc605b9a/Qrz8VuEO3M.lottie"
+        background="transparent"
+        speed="1"
+        style="width: 100px; height: 100px"
+        loop
+        autoplay
+      ></dotlottie-player>
+      <h1>Script Runner</h1>
+    </div>
 
-        <div class="input-group">
-          <label
-            >Select list of the customapp in a json file:
-            <span class="file-type">(*.json)</span></label
-          >
-          <button
-            class="button-primary"
-            class="button-primary"
-            id="selectFlavorFile"
-          >
-            Choose JSON File
-          </button>
-          <span id="singleFilePath" class="file-path"></span>
-          <div id="jsonError" class="error"></div>
-        </div>
+    <div class="container">
+      <div class="d-grid" style="display: flex">
+        <div class="card card-brutalism">
+          <div class="card-content">
+            <div class="input-group">
+              <label
+                >Select multiple google-services.json:<span class="file-type"
+                  >(*.json)</span
+                ></label
+              >
+              <span id="googleJsonFilePath" class="file-path hidden"></span>
+              <button class="button-primary" id="selectGoogleJsonFile">
+                Choose Files
+              </button>
+            </div>
 
-        <div class="input-group">
-          <label
-            >Select Directory of Android Studio Project:
-            <span id="directoryPathAndroidStudio" class="file-path"
-              >asd</span
-            ></label
-          >
-          <button class="button-primary" id="selectDirectoryAndroidStudio">
-            Choose Directory
-          </button>
-        </div>
+            <div class="input-group">
+              <label
+                >Select list of the customapp in a json file:
+                <span class="file-type">(*.json)</span></label
+              >
+              <span id="singleFilePath" class="file-path hidden"></span>
+              <button
+                class="button-primary"
+                class="button-primary"
+                id="selectFlavorFile"
+              >
+                Choose JSON File
+              </button>
+              <div id="jsonError" class="error"></div>
+            </div>
 
-        <div class="input-group">
-          <label
-            >Select Directory of the Result:
-            <span id="directoryPathResult" class="file-path">asd</span></label
-          >
-          <button class="button-primary" id="selectDirectoryResult">
-            Choose Directory
-          </button>
-        </div>
+            <div class="input-group">
+              <label>Select Directory of Android Studio Project:</label>
+              <span
+                id="directoryPathAndroidStudio"
+                class="file-path hidden"
+              ></span>
+              <button class="button-primary" id="selectDirectoryAndroidStudio">
+                Choose Directory
+              </button>
+            </div>
 
-        <div class="input-group">
-          <label>Versi dinaikin:</label>
-          <select id="numberSelect" class="button-primary">
-            <option value="1">Ya</option>
-            <option value="2">Tidak</option>
-          </select>
-        </div>
+            <div class="input-group">
+              <label
+                >Select Directory of the Result:
+                <span id="directoryPathResult" class="file-path"
+                  >asd</span
+                ></label
+              >
+              <button class="button-primary" id="selectDirectoryResult">
+                Choose Directory
+              </button>
+            </div>
 
-        <div class="input-group">
-          <label>Opsi:</label>
-          <select id="resultSelect" class="button-primary">
-            <option value="1">Buatkan APK Debug saja</option>
-            <option value="2">Buatkan AAB Release saja</option>
-            <option value="3">Buatkan AAB dan APK nya</option>
-          </select>
-        </div>
+            <div class="input-group">
+              <label>Versi dinaikin:</label>
+              <select id="numberSelect" class="button-primary">
+                <option value="1">Ya</option>
+                <option value="2">Tidak</option>
+              </select>
+            </div>
 
-        <div class="input-group">
-          <button class="button-secondary" id="runScript">Run Script</button>
+            <div class="input-group">
+              <label>Opsi:</label>
+              <select id="resultSelect" class="button-primary">
+                <option value="1">Buatkan APK Debug saja</option>
+                <option value="2">Buatkan AAB Release saja</option>
+                <option value="3">Buatkan AAB dan APK nya</option>
+              </select>
+            </div>
+
+            <div class="input-group">
+              <button class="button-secondary" id="runScript">
+                Run Script
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-      <div>
-        Pilih Flavor yang akan dibuatkan:
-        <div>
-          <input type="checkbox" id="selectAll" name="selectAll" />
-          <label for="selectAll">Select All</label>
-        </div>
-        <div style="max-height: 150px; overflow-y: auto">
-          <div id="checkboxContainer"></div>
+        <div class="card card-brutalism">
+          <div class="card-content">
+            Pilih Flavor yang akan dibuatkan:
+            <div>
+              <input type="checkbox" id="selectAll" name="selectAll" />
+              <label for="selectAll">Select All</label>
+            </div>
+            <div style="max-height: 150px; overflow-y: auto">
+              <div id="checkboxContainer"></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -202,14 +286,14 @@
           }
           for (let i = 0; i < jsonData.length; i++) {
             if (document.getElementById(`flavor-${i}`).checked) {
-                let c = jsonData[i];
-                let tempSigningConfig = `${c.flavorName}ConfigRelease {
+              let c = jsonData[i];
+              let tempSigningConfig = `${c.flavorName}ConfigRelease {
                     storeFile file("jks/${c.keystoreName}")
                     storePassword "${c.password}"
                     keyAlias "${c.keyAlias}"
                     keyPassword "${c.password}"
                 }\n`;
-                let tempProductFlavor = `${c.flavorName} {
+              let tempProductFlavor = `${c.flavorName} {
                     applicationId "${c.packageName}"
                     versionCode ${c.versionCode}
                     versionName "${c.versionName}"
@@ -217,27 +301,34 @@
                     resValue "string", "bank_partner", "${c.banks.join(",")}"
                     resValue "color", "primary", "${c.primary}"
                     resValue "color", "secondary", "${c.secondary}"
-                    buildConfigField("String", "SERVER_KEY_ID", secretProperties['SERVER_KEY_ID_${c.serverKey}'])
+                    buildConfigField("String", "SERVER_KEY_ID", secretProperties['SERVER_KEY_ID_${
+                      c.serverKey
+                    }'])
                     signingConfig signingConfigs.${c.flavorName}ConfigRelease
                 }\n`;
-                signingConfigContent += tempSigningConfig;
-                productFlavorContent += tempProductFlavor;
+              signingConfigContent += tempSigningConfig;
+              productFlavorContent += tempProductFlavor;
             }
           }
 
-            let gradleFileContent = getExampleGradleFile();
-            gradleFileContent = gradleFileContent.replace(`signingConfigs {}`, `signingConfigs {${signingConfigContent}}`);
-            gradleFileContent = gradleFileContent.replace(`productFlavors {}`, `productFlavors {${productFlavorContent}}`);
-            // console.log(gradleFileContent);
-            localStorage.setItem("test", "gradleFileContent");
-            ipcRenderer.send('coba');
-            let data = {
-                path: directoryPathResult,
-                fileName: "build.gradle",
-                content: gradleFileContent
-            }
-            ipcRenderer.send("create-file", data);
-
+          let gradleFileContent = getExampleGradleFile();
+          gradleFileContent = gradleFileContent.replace(
+            `signingConfigs {}`,
+            `signingConfigs {${signingConfigContent}}`
+          );
+          gradleFileContent = gradleFileContent.replace(
+            `productFlavors {}`,
+            `productFlavors {${productFlavorContent}}`
+          );
+          // console.log(gradleFileContent);
+          localStorage.setItem("test", "gradleFileContent");
+          ipcRenderer.send("coba");
+          let data = {
+            path: directoryPathResult,
+            fileName: "build.gradle",
+            content: gradleFileContent,
+          };
+          ipcRenderer.send("create-file", data);
         } else if (step == 1) {
         }
       }
@@ -272,6 +363,9 @@
         googleJsonFilePath = paths;
         document.getElementById("googleJsonFilePath").textContent =
           googleJsonFilePath || "";
+        document
+          .getElementById("googleJsonFilePath")
+          .classList.remove("hidden");
       });
 
       // Single file selection (JSON only)
@@ -287,6 +381,7 @@
         flavorFilePath = data.path;
         jsonData = data.content;
         document.getElementById("singleFilePath").textContent = flavorFilePath;
+        document.getElementById("singleFilePath").classList.remove("hidden");
 
         // Generate checkboxes for flavorName
         const checkboxContainer = document.getElementById("checkboxContainer");
@@ -342,6 +437,9 @@
         directoryPathAndroidStudio = path;
         document.getElementById("directoryPathAndroidStudio").textContent =
           directoryPathAndroidStudio || "";
+        document
+          .getElementById("directoryPathAndroidStudio")
+          .classList.remove("hidden");
       });
 
       ipcRenderer.on("build-gradle-content-detected", (event, content) => {
